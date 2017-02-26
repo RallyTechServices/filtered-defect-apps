@@ -1,4 +1,4 @@
-Ext.define("RallyTechServices.filtereddefectapps.BurndownApp", {
+Ext.define("RallyTechServices.filtereddefectapps.FilteredDefectTrendApp", {
     extend: 'RallyTechServices.filtereddefectapps.AppBase',
 
     integrationHeaders : {
@@ -10,57 +10,44 @@ Ext.define("RallyTechServices.filtereddefectapps.BurndownApp", {
         this.on('filtersupdated', this.updateView, this);
 
     },
+    getStartDate: function(){
+        return Rally.util.DateTime.add(new Date(), 'day', -this.getSetting('dateRange'));
+    },
     updateView: function(){
-
-        var find = this.getFilterFindConfig();
-        this.logger.log('updateView', find, this.getStartDate(), this.getEndDate());
-        this.logger.log('updateview', this.getActiveDefectStates());
-
-        //var milestoneSubtitle = "(Any milestones)";
-        //var milestones = Ext.Array.map(Ext.Object.getValues(this.milestoneData), function(m){
-        //    var milestoneText = Ext.String.format("{0}: <b>{1}</b>", m.FormattedID, m.Name);
-        //    if (m.TargetDate){
-        //        milestoneText += " (" + Rally.util.DateTime.format(m.TargetDate, 'd-m-Y') + ")";
-        //    }
-        //    return milestoneText;
-        //});
-        //if (milestones && milestones.length > 0){
-        //    milestoneSubtitle = milestones.join(', ');
-        //}
-
+        this.logger.log('updateView', this.getFilterFindConfig());
 
         this.getDisplayBox().removeAll();
-
-        var tickInterval = 5;
-
         this.getDisplayBox().add({
             xtype: 'rallychart',
-            chartColors: ["#7CAFD7","#6ab17d"],
+            chartColors: ['#222','#6ab17d','#B81B10'],
+            listeners: {
+                snapshotsAggregated: this.updateChartData,
+                scope: this
+            },
             storeType: 'Rally.data.lookback.SnapshotStore',
             storeConfig: {
-                find: find,
-                fetch: ['State'],
+                find: this.getFilterFindConfig(),
+                fetch: ['State',"CreationDate"],
                 hydrate: ['State'],
                 limit: Infinity,
                 removeUnauthorizedSnapshots: true
             },
-            calculatorType: 'RallyTechServices.filtereddefectapps.DefectBurndownCalculator',
+            calculatorType: 'RallyTechServices.filtereddefectapps.DefectTrendCalculator',
             calculatorConfig: {
                 activeDefectStates: this.getActiveDefectStates(),
-                startDate: this.getStartDate(),
-                endDate: this.getEndDate()
+                closedDefectStates: this.getClosedDefectStates(),
+                startDate: this.getStartDate()
             },
             chartConfig: {
                 chart: {
-                    type: 'column'
+                    type: 'xy'
                 },
                 title: {
-                    text: 'Defect Burndown',
+                    text: 'Defect Trend',
                     style: {
                         color: '#666',
                         fontSize: '18px',
                         fontFamily: 'ProximaNova',
-                        textTransform: 'uppercase',
                         fill: '#666'
                     }
                 },
@@ -75,7 +62,7 @@ Ext.define("RallyTechServices.filtereddefectapps.BurndownApp", {
                 },
                 xAxis: {
                     tickmarkPlacement: 'on',
-                    tickInterval: tickInterval,
+                    tickInterval: 5,
                     title: {
                         text: 'Days',
                         style: {
@@ -89,6 +76,7 @@ Ext.define("RallyTechServices.filtereddefectapps.BurndownApp", {
                 },
                 yAxis: [
                     {
+                        min: 0,
                         title: {
                             text: 'Count',
                             style: {
@@ -100,7 +88,6 @@ Ext.define("RallyTechServices.filtereddefectapps.BurndownApp", {
                         }
                     }
                 ],
-
                 legend: {
                     itemStyle: {
                         color: '#444',
@@ -119,35 +106,27 @@ Ext.define("RallyTechServices.filtereddefectapps.BurndownApp", {
                     borderColor: '#444'
                 }
             }
-
         });
-    },
 
-    getStartDate: function(){
-        return (this.getSetting('startDate') && Rally.util.DateTime.fromIsoString(this.getSetting('startDate'))) || Rally.util.DateTime.add(this.getEndDate(), 'day', -30);
     },
-    getEndDate: function(){
-        return (this.getSetting('endDate') && Rally.util.DateTime.fromIsoString(this.getSetting('endDate'))) || new Date();
+    updateChartData: function(chart){
+        var chartData = chart.getChartData();
+        console.log('chartDate', chartData);
+    },
+    getClosedDefectStates: function(){
+        return Ext.Array.difference(this.defectStates, this.getActiveDefectStates());
     },
     getSettingsFields: function(){
         var fields = this.callParent(arguments);
         var labelWidth = 200;
         fields.push({
-            xtype: 'rallydatefield',
-            fieldLabel: 'Start Date',
-            labelAlign: 'right',
-            labelWidth: labelWidth,
-            name: 'startDate',
-            allowBlank: false
-        });
-
-        fields.push({
-            xtype: 'rallydatefield',
-            fieldLabel: 'End Date',
-            labelAlign: 'right',
-            labelWidth: labelWidth,
-            name: 'endDate',
-            allowBlank: false
+            name: "dateRange",
+                xtype: 'rallynumberfield',
+                fieldLabel: 'Date Range',
+                labelAlign: 'right',
+                labelWidth: labelWidth,
+                minValue: 0,
+                afterBodyEl: ' days'
         });
         return fields;
     }
