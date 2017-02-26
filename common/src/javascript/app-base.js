@@ -6,7 +6,7 @@ Ext.define("RallyTechServices.filtereddefectapps.AppBase", {
     items: [
         {xtype:'container',itemId:'selector_box', layout: 'hbox'},
         {xtype:'container',itemId:'filter_box', flex: 1},
-        {xtype:'container',itemId:'display_box'}
+        {xtype:'container',itemId:'display_box', tpl: '<div class="no-data-container"><div class="secondary-message">{message}</div></div>'}
     ],
 
     integrationHeaders : {
@@ -14,12 +14,14 @@ Ext.define("RallyTechServices.filtereddefectapps.AppBase", {
     },
 
     config: {
-        includeStates: [],
-        includeMilestones: [],
-        includePriorities: [],
-        dateRange: 30,
-        startDate: null,
-        endDate: null
+        defaultSettings: {
+            includeStates: [],
+            includeMilestones: [],
+            includePriorities: [],
+            dateRange: 30,
+            startDate: null,
+            endDate: null
+        }
     },
 
     modelType: 'Defect',
@@ -44,6 +46,7 @@ Ext.define("RallyTechServices.filtereddefectapps.AppBase", {
 
     launch: function(){
         this.logger.log('launch settings', this.getSettings());
+
         var promises = [RallyTechServices.filtereddefectapps.common.Toolbox.fetchDefectStates()];
         if (!this.includeMilestonePicker){
             promises.push(this._fetchMilestoneData());
@@ -59,12 +62,23 @@ Ext.define("RallyTechServices.filtereddefectapps.AppBase", {
                     this.milestoneData = results[1];
                     this.logger.log('launch milestoneData', this.milestoneData);
                 }
-                this._addSelectors();
+                if (this.validateSettings()){
+                    this._addSelectors();
+                }
             },
             failure: this.showErrorNotification,
             scope: this
         });
 
+    },
+    validateSettings: function(){
+        var activeStates = this.getActiveDefectStates();
+        this.logger.log('validateSettings', activeStates);
+        if (!activeStates || activeStates.length === 0){
+            this.down('#display_box').update({message: "Please use the app settings to configure at least 1 active defect state."});
+            return false;
+        }
+        return true;
     },
     showErrorNotification: function(msg){
         Rally.ui.notify.Notifier.showError({message: msg});

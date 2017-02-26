@@ -120,7 +120,7 @@ Ext.define("RallyTechServices.filtereddefectapps.FilteredDefectTrendApp", {
         var fields = this.callParent(arguments);
         var labelWidth = 200;
         fields.push({
-            name: "dateRange",
+                name: "dateRange",
                 xtype: 'rallynumberfield',
                 fieldLabel: 'Date Range',
                 labelAlign: 'right',
