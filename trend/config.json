@@ -1,0 +1,6 @@
+{
+    "name": "Filtered Defect Trend App",
+    "sdk": "2.1",
+    "className": "RallyTechServices.filtereddefectapps.FilteredDefectTrendApp",
+    "story": "--"
+}
