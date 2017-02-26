@@ -8,7 +8,7 @@ Ext.define('RallyTechServices.filtereddefectapps.common.Toolbox',{
             success: function (model) {
                 Deft.Promise.all([
                     RallyTechServices.filtereddefectapps.common.Toolbox.fetchAllowedValues(model, 'State'),
-                    RallyTechServices.filtereddefectapps.common.Toolbox.fetchAllowedValues(model, 'Severity')]).then({
+                    RallyTechServices.filtereddefectapps.common.Toolbox.fetchAllowedValues(model, 'Priority')]).then({
 
                     success: function (results) {
                         deferred.resolve(results);
