@@ -1,0 +1,6 @@
+{
+    "name": "Filtered Defect Matrix",
+    "sdk": "2.1",
+    "className": "RallyTechServices.filtereddefectapps.DefectHHistoryMatrix",
+    "story": "--"
+}
