@@ -1,0 +1,6 @@
+{
+    "name": "Filtered Defect Burndown",
+    "sdk": "2.1",
+    "className": "RallyTechServices.filtereddefectapps.BurndownApp",
+    "story": "--"
+}
