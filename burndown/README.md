@@ -1,8 +1,31 @@
 #Filtered Defect Burndown
 
 ## Summary/Description
+Burndown of count of defects that match the filter criteria set in the App Settings.  The filters are applied to the 
+defect snapshots, so the defect is only included in the burndown at times where it meets the filter criteria.  
 
-![screenshot](./images/screenshot.png "This is an example")
+![screenshot](./../images/defect-burndown.png)
+
+## App Settings
+
+![screenshot](./../images/defect-burndown-settings.png)
+
+##### Milestones
+Choose 0 to many milestones to filter the defects by.  Defects will meet the filter criteria if they have at least one of the chosen milestones.
+If no milestones are selected, then there will be no milestone filter applied.  
+
+##### Active States
+These are the states that are burned down.  If a defect is in one of these states, it will be included in the count.  
+
+##### Include Priorities
+If 1 or more priorities are selected, then only defects that fall into that priority category at the time of measure will be included in the count.  
+If 0 priorities are selected, then all priorities will be included in the count.  
+
+##### Start Date and End Date
+The time range of the burndown.  
+
+## Notes
+This app is scoped to the entire workspace.  
 
 ## Development Notes
 

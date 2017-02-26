@@ -1,8 +1,41 @@
 #Filtered Defect Trend App
 
 ## Summary/Description
+Displays defect trend for the selected filter criteria (filtered by Milestone + Priority).  
 
-![screenshot](./images/screenshot.png "This is an example")
+The "Activated" and "Closed Defects" trend begins at 0 on the first day of the chart.  
+
+Each day after that:
+*  if a defect is transitioned into a non-active state, then that will be reflected in the "Closed Defects" line.  This line is a cumulative count of defects closed since the first day of the chart.  
+*  if a new defect is added, then that will be reflected in the "Activated" defects line.  This is also a cumulative count of defects added since the first day of the chart.  If a defect is added and 
+then immediately closed, 1 count will be added to both lines for that day.  
+
+The "Total Activated" defects represents the total number of defects that were in an active state.
+
+![screenshot](./../images/defect-trend.png)
+
+## App Settings
+
+![screenshot](./../images/defect-trend-settings.png)
+
+##### Milestones
+Choose 0 to many milestones to filter the defects by.  Defects will meet the filter criteria if they have at least one of the chosen milestones.
+If no milestones are selected, then there will be no milestone filter applied.  
+
+##### Active States
+These are the states that are considered "Active".  If a defect is in one of these states, it will be included in the "Total Active Defects" count and the "Active Defects" line.  
+States not marked as Active will be considered closed and the defect count will be incremented each time a defect is transitioned into one of the "non-active" states. 
+
+##### Include Priorities
+If 1 or more priorities are selected, then only defects that fall into that priority category at the time of measure will be included in the dataset.  
+If 0 priorities are selected, then all priorities will be included in the dataset.  
+
+##### Date Range
+The number of days back to show
+
+## Notes
+This app is scoped to the entire workspace.  
+
 
 ## Development Notes
 

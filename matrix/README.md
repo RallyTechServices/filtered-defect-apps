@@ -1,8 +1,54 @@
-#Filtered Defect Matrix
+#Filtered Defect history matrix
 
 ## Summary/Description
+Shows the number of defects that were associated with the particular "bucket" field value for each day.  
 
-![screenshot](./images/screenshot.png "This is an example")
+Milestone and Tag Filters are "anded".  
+
+If multiple milestones or tags are selected, then at least one of those each item must be associated with the defect for it to count towards teh historical number.  
+
+![screenshot](./../images/filtered-defect-matrix.png "This is an example")
+
+The field to aggregate the counts by (aka "Bucket Field") and the number of historical days shown is configured via the app settings.  Setting the value to "5" will show numbers for the last 5 days.  
+
+
+## App Settings 
+![screenshot](./../images/defect-matrix-settings.png)
+
+##### Milestones
+Choose 0 to many milestones to filter the defects by.  Defects will meet the filter criteria if they have at least one of the chosen milestones.
+If no milestones are selected, then there will be no milestone filter applied.  
+
+##### Active States
+These are the states that are included in the matrix counts. 
+
+##### Include Priorities
+If 1 or more priorities are selected, then only defects that fall into that priority category at the time of measure will be included in the count.  
+If 0 priorities are selected, then all priorities will be included in the count.  
+
+##### Number of Historical days
+The number of days in the past from the current day to show defect counts 
+
+##### Bucket Field 
+The field to aggregate the historical defect counts by.  Bucket fields include any string fields that are not read only and the following exceptions:
+ 
+ * Project
+ * Owner
+ * SubmittedBy
+ * State
+ * ScheduleState
+ * Priority
+ * Severity
+ * Environment 
+
+## Notes
+If you are bucketing based on a User field (Owner, Submitted By), then if a user
+has been deleted you will just see an ObjectID in that user's place.  
+
+Time buckets represent local time.
+
+State and Priority filters are multi select.  If nothing is selected, then those fields are not filtered on.  
+
 
 ## Development Notes
 
